@@ -1,6 +1,8 @@
 # docker-mergesrt
 Docker container for monitoring subtitle files and merging them into video
 
+Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
+
 ## Features
 - search for existing `*.lang.srt` files
 - monitor for new `*.lang.srt` files
@@ -21,7 +23,7 @@ Docker container for monitoring subtitle files and merging them into video
   ```yaml
   mergesrt:
     container_name: mergesrt
-    build: https://github.com/zzeneg/docker-mergesrt.git 
+    image: zzeneg/mergesrt
     restart: unless-stopped
     volumes:
       - /media:/data
