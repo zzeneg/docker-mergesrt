@@ -1,8 +1,8 @@
 FROM alpine
 
-RUN apk add --no-cache inotify-tools mkvtoolnix bash
+RUN apk add --no-cache inotify-tools mkvtoolnix curl
 
-ADD mergesrt.sh .
+COPY /mergesrt.sh /
 
 RUN ["chmod", "+x", "mergesrt.sh"]
 

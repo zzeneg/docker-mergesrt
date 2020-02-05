@@ -9,6 +9,7 @@ Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
 - merge subtitles to `mkv` files
 - replace existing subtitles with the same language
 - remove merged `*.lang.srt` files
+- send notification to a webhook after a successful merge
 
 ## Requirements
 - a folder with media files should be mapped to `/data`
@@ -18,13 +19,33 @@ Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
   ```
   (`&& echo` is required because bazarr can't handle scripts ending with quotes)
 
+
 ## Usage
+- specify environment variables for a webhook (optional):
+  - `WEBHOOK_URL` - URL for the POST request. For example you can use [Apprise](https://github.com/caronc/apprise)
+  - `WEBHOOK_TEMPLATE` - template for the POST request body. Note that all double quotes `"` should be escaped by a backslash `\` and dollar signs `$` should be doubled. You can use variables in this template:
+    - `$SRT_FILE` - full path to the subtitle file
+    - `$MKV_FILE` - full path to the video file
+    - `$LANG` - ISO 639-2 language code of the subtitles 
+
 - docker-compose example
   ```yaml
   mergesrt:
     container_name: mergesrt
     image: zzeneg/mergesrt
     restart: unless-stopped
+    environment:
+      WEBHOOK_URL: http://apprise:8000/notify
+      WEBHOOK_TEMPLATE: '{\"title\":\"*MergeSRT notification*\", \"body\":\""Subtitles $$SRT_FILE were merged succesfully."\"}'
     volumes:
       - /media:/data
+
+  apprise:
+    container_name: apprise
+    image: caronc/apprise
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      APPRISE_STATELESS_URLS: tgram://${TELEGRAM_LOGGER_TOKEN}/${TELEGRAM_LOGGER_CHATID}?format=markdown
   ```
