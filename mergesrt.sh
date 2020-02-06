@@ -40,8 +40,8 @@ find $DATA_DIR -type f -regex ".*\.[a-z][a-z][a-z]\.srt$" |
         mergesrt "$srt"
     done
 
-inotifywait -m -r $DATA_DIR -e create --include '.*[a-z]{3}\.srt$' --format '%w%f' |
+inotifywait -m -r $DATA_DIR -e create -e move --include '.*[a-z]{3}\.srt$' --format '%w%f' |
     while read srt; do
-        echo "The file '$srt' was created"
+        echo "The file '$srt' was created/moved"
         mergesrt "$srt"
     done
