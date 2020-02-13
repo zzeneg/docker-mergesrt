@@ -45,3 +45,5 @@ inotifywait -m -r $DATA_DIR -e create -e move --include '.*[a-z]{3}\.srt$' --for
         echo "The file '$srt' was created/moved"
         mergesrt "$srt"
     done
+
+echo EXIT
