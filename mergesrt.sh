@@ -33,9 +33,9 @@ mergesrt() {
 
 echo START
 
-DATA_DIR="/data"
+DATA_DIR='/data'
 
-find $DATA_DIR -type f -regex ".*\.[a-z][a-z][a-z]\.srt$" |
+find "$DATA_DIR" -type f -regex ".*\.[a-z][a-z][a-z]\.srt$" |
     while read srt; do
         mergesrt "$srt"
     done
