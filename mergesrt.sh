@@ -16,9 +16,18 @@ mergesrt() {
     echo "File name: $FILE_NAME"
     MKV_FILE=$FILE_NAME'.mkv'
     if [ -f "$MKV_FILE" ]; then
-        echo "File $MKV_FILE exists, start merging"
+        echo "File $MKV_FILE exists, start processing"
+        TRACKS_TO_COPY=$(mkvmerge -J "$MKV_FILE" | jq -r "
+            .tracks
+                | map(select(.type == \"subtitles\"))
+                | map(select(.properties.language != \""$LANG"\"))
+                | if (\"$REMOVE_PGS\" | length > 0) then map(select(.codec | contains(\"PGS\") | not)) else . end
+                | if (. | length > 0) then map(\"-s \" + (.id | tostring)) | join(\" \") else \"-S\" end
+            "
+        )
+        echo "TRACKS_TO_COPY $TRACKS_TO_COPY"
         TEMP_MKV=$FILE_NAME'_merge.mkv'
-        mkvmerge -o "$TEMP_MKV" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE"
+        mkvmerge -o "$TEMP_MKV" $TRACKS_TO_COPY "$MKV_FILE" --language 0:$LANG "$SRT_FILE"
         echo "Delete $SRT_FILE"
         rm "$SRT_FILE"
         echo "Delete $MKV_FILE"
