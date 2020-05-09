@@ -9,7 +9,7 @@ Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
 - merge subtitles to `mkv` files
 - replace existing subtitles with the same language
 - remove merged `*.lang.srt` files
-- send notification to a webhook after a successful merge
+- send notification to a webhook after a merge (success/fail)
 
 ## Requirements
 - a folder with media files should be mapped to `/data`
@@ -27,6 +27,7 @@ Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
     - `$SRT_FILE` - full path to the subtitle file
     - `$MKV_FILE` - full path to the video file
     - `$LANG` - ISO 639-2 language code of the subtitles 
+    - `$RESULT` - merge result, returns `merge succeeded` if subtitles were merged, `merge failed: {mkvmerge log}` otherwise
 
 - docker-compose example
   ```yaml
@@ -36,7 +37,7 @@ Published on [Docker Hub](https://hub.docker.com/r/zzeneg/mergesrt)
     restart: unless-stopped
     environment:
       WEBHOOK_URL: http://apprise:8000/notify
-      WEBHOOK_TEMPLATE: '{\"title\":\"*MergeSRT notification*\", \"body\":\""Subtitles $$SRT_FILE were merged succesfully."\"}'
+      WEBHOOK_TEMPLATE: '{\"title\":\"*MergeSRT notification*\", \"body\":\""$$SRT_FILE: $$RESULT"\"}'
     volumes:
       - /media:/data
 

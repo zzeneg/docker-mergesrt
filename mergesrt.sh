@@ -21,7 +21,7 @@ mergesrt() {
         OUTPUT=$(mkvmerge -o "$TEMP_MKV" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
         RESULT=$?
         if [ "$RESULT" -eq "0" ]; then
-            RESULT="merged succesfully"
+            RESULT="merge succeeded"
             echo "Delete $SRT_FILE"
             rm "$SRT_FILE"
             echo "Delete $MKV_FILE"
