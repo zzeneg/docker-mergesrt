@@ -18,13 +18,19 @@ mergesrt() {
     if [ -f "$MKV_FILE" ]; then
         echo "File $MKV_FILE exists, start merging"
         TEMP_MKV=$FILE_NAME'_merge.mkv'
-        mkvmerge -o "$TEMP_MKV" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE"
-        echo "Delete $SRT_FILE"
-        rm "$SRT_FILE"
-        echo "Delete $MKV_FILE"
-        rm "$MKV_FILE"
-        echo "Rename $TEMP_MKV to $MKV_FILE"
-        mv "$TEMP_MKV" "$MKV_FILE"
+        OUTPUT=$(mkvmerge -o "$TEMP_MKV" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
+        RESULT=$?
+        if [ "$RESULT" -eq "0" ]; then
+            RESULT="merged succesfully"
+            echo "Delete $SRT_FILE"
+            rm "$SRT_FILE"
+            echo "Delete $MKV_FILE"
+            rm "$MKV_FILE"
+            echo "Rename $TEMP_MKV to $MKV_FILE"
+            mv "$TEMP_MKV" "$MKV_FILE"
+        else
+            RESULT="merge failed: $OUTPUT"
+        fi
         sendToWebhook
     else 
         echo "File $MKV_FILE does not exist, skipping"
