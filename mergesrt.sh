@@ -27,13 +27,19 @@ mergesrt() {
         )
         echo "TRACKS_TO_COPY $TRACKS_TO_COPY"
         TEMP_MKV=$FILE_NAME'_merge.mkv'
-        mkvmerge -o "$TEMP_MKV" $TRACKS_TO_COPY "$MKV_FILE" --language 0:$LANG "$SRT_FILE"
-        echo "Delete $SRT_FILE"
-        rm "$SRT_FILE"
-        echo "Delete $MKV_FILE"
-        rm "$MKV_FILE"
-        echo "Rename $TEMP_MKV to $MKV_FILE"
-        mv "$TEMP_MKV" "$MKV_FILE"
+        OUTPUT=$(mkvmerge -o "$TEMP_MKV" $TRACKS_TO_COPY "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
+        RESULT=$?
+        if [ "$RESULT" -eq "0" ]; then
+            RESULT="merged succesfully"
+            echo "Delete $SRT_FILE"
+            rm "$SRT_FILE"
+            echo "Delete $MKV_FILE"
+            rm "$MKV_FILE"
+            echo "Rename $TEMP_MKV to $MKV_FILE"
+            mv "$TEMP_MKV" "$MKV_FILE"
+        else
+            RESULT="merge failed: $OUTPUT"
+        fi
         sendToWebhook
     else 
         echo "File $MKV_FILE does not exist, skipping"
