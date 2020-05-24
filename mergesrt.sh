@@ -17,8 +17,8 @@ mergesrt() {
     MKV_FILE=$FILE_NAME'.mkv'
     if [ -f "$MKV_FILE" ]; then
         echo "File $MKV_FILE exists, start merging"
-        TEMP_MKV=$FILE_NAME'_merge.mkv'
-        OUTPUT=$(mkvmerge -o "$TEMP_MKV" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
+        MERGE_FILE=$FILE_NAME'.merge'
+        OUTPUT=$(mkvmerge -o "$MERGE_FILE" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
         RESULT=$?
         if [ "$RESULT" -eq "0" ]; then
             RESULT="merge succeeded"
@@ -26,8 +26,8 @@ mergesrt() {
             rm "$SRT_FILE"
             echo "Delete $MKV_FILE"
             rm "$MKV_FILE"
-            echo "Rename $TEMP_MKV to $MKV_FILE"
-            mv "$TEMP_MKV" "$MKV_FILE"
+            echo "Rename $MERGE_FILE to $MKV_FILE"
+            mv "$MERGE_FILE" "$MKV_FILE"
         else
             RESULT="merge failed: $OUTPUT"
         fi
