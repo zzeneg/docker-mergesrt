@@ -31,6 +31,7 @@ mergesrt() {
         else
             RESULT="merge failed: $OUTPUT"
         fi
+        echo "$RESULT"
         sendToWebhook
     else 
         echo "File $MKV_FILE does not exist, skipping"
