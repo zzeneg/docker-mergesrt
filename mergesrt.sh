@@ -14,28 +14,32 @@ mergesrt() {
     echo "Subtitle language: $LANG"
     FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
     echo "File name: $FILE_NAME"
-    MKV_FILE=$FILE_NAME'.mkv'
-    if [ -f "$MKV_FILE" ]; then
-        echo "File $MKV_FILE exists, start merging"
-        MERGE_FILE=$FILE_NAME'.merge'
-        OUTPUT=$(mkvmerge -o "$MERGE_FILE" -s !$LANG "$MKV_FILE" --language 0:$LANG "$SRT_FILE")
-        RESULT=$?
-        if [ "$RESULT" -eq "0" ]; then
-            RESULT="merge succeeded"
-            echo "Delete $SRT_FILE"
-            rm "$SRT_FILE"
-            echo "Delete $MKV_FILE"
-            rm "$MKV_FILE"
-            echo "Rename $MERGE_FILE to $MKV_FILE"
-            mv "$MERGE_FILE" "$MKV_FILE"
-        else
-            RESULT="merge failed: $OUTPUT"
-        fi
-        echo "$RESULT"
-        sendToWebhook
-    else 
-        echo "File $MKV_FILE does not exist, skipping"
+    VIDEO_FILE=$FILE_NAME'.mkv'
+    if [ ! -f "$VIDEO_FILE" ]; then
+        VIDEO_FILE=$FILE_NAME'.mp4'
     fi
+    if [ ! -f "$VIDEO_FILE" ]; then
+        echo "File $VIDEO_FILE does not exist, skipping"
+        return
+    fi
+
+    echo "File $VIDEO_FILE exists, start merging"
+    MERGE_FILE=$FILE_NAME'.merge'
+    OUTPUT=$(mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG "$SRT_FILE")
+    RESULT=$?
+    if [ "$RESULT" -eq "0" ]; then
+        RESULT="merge succeeded"
+        echo "Delete $SRT_FILE"
+        rm "$SRT_FILE"
+        echo "Delete $VIDEO_FILE"
+        rm "$VIDEO_FILE"
+        echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+        mv "$MERGE_FILE" "$FILE_NAME.mkv"
+    else
+        RESULT="merge failed: $OUTPUT"
+    fi
+    echo "$RESULT"
+    sendToWebhook
 }
 
 echo START
