@@ -25,10 +25,11 @@ mergesrt() {
 
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    OUTPUT=$(mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG "$SRT_FILE")
+    mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG "$SRT_FILE"
     RESULT=$?
-    if [ "$RESULT" -eq "0" ]; then
-        RESULT="merge succeeded"
+    if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
+        RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
+        echo "$RESULT"
         echo "Delete $SRT_FILE"
         rm "$SRT_FILE"
         echo "Delete $VIDEO_FILE"
@@ -36,9 +37,10 @@ mergesrt() {
         echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
         mv "$MERGE_FILE" "$FILE_NAME.mkv"
     else
-        RESULT="merge failed: $OUTPUT"
+        RESULT="merge failed"
+        echo "$RESULT"
     fi
-    echo "$RESULT"
+
     sendToWebhook
 }
 
@@ -51,7 +53,7 @@ find "$DATA_DIR" -type f -regex ".*\.[a-z][a-z][a-z]\.srt$" |
         mergesrt "$srt"
     done
 
-inotifywait -m -r $DATA_DIR -e create -e move --include '.*[a-z]{3}\.srt$' --format '%w%f' |
+inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*[a-z]{3}\.srt$' --format '%w%f' |
     while read srt; do
         echo "The file '$srt' was created/moved"
         mergesrt "$srt"
