@@ -25,6 +25,7 @@ mergesrt() {
     
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
+<< Needwork
     if [ "${SRT_FILE,,}" == *"sdh"* ]; then 
         echo "Found SDH file" 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:SDH" --forced-display-flag "0:yes" "$SRT_FILE"
@@ -33,8 +34,10 @@ mergesrt() {
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:FORCED" --hearing-impaired-flag "0:yes" "$SRT_FILE"
     else
         echo "Found ENG file" 
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:ENG" "$SRT_FILE"
+        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:${LANG^^}" "$SRT_FILE"
     fi
+Needwork
+    mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:${LANG^^}" "$SRT_FILE"
     RESULT=$?
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
