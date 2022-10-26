@@ -10,7 +10,7 @@ sendToWebhook() {
 mergesrt() {
     SRT_FILE=$1
     echo "SRT file: $SRT_FILE"
-    LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
+    LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{3})\.srt$|\1|')
     echo "Subtitle language: $LANG"
     FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
     echo "File name: $FILE_NAME"
@@ -60,7 +60,7 @@ find "$DATA_DIR" -type f -regex ".*\.(?:[a-z])?[a-z][a-z]\.srt$" |
         mergesrt "$srt"
     done
 
-inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*[a-z]{2,3}\.srt$' --format '%w%f' |
+inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*[a-z]{3}\.srt$' --format '%w%f' |
     while read srt; do
         echo "The file '$srt' was created/moved"
         mergesrt "$srt"
