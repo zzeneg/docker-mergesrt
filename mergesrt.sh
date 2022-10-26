@@ -28,7 +28,7 @@ mergesrt() {
     
     if [[ "${SRT_FILE,,}" = *"sdh"* ]]; then 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:SDH" --forced-display-flag "0:yes" "$SRT_FILE"
-    else if [[ "${SRT_FILE,,}" = *"forced"* ]]; then 
+    elif [[ "${SRT_FILE,,}" = *"forced"* ]]; then 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:FORCED" --hearing-impaired-flag "0:yes" "$SRT_FILE"
     else
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:ENG" "$SRT_FILE"
