@@ -8,13 +8,22 @@ sendToWebhook() {
 }
 
 mergesrt() {
+    TYPE_LIST=("sdh", "forced", "hi", "cc")
     SRT_FILE=$1
     echo "SRT file: $SRT_FILE"
-    LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
+    #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
+    LANG=$(echo "$SRT_FILE" | rev | cut -d'.' -f2 | rev)
     echo "Subtitle language: $LANG"
-    TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
-    echo "Subtitle type: $TYPE"
-    FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
+    #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
+    if [[ $(echo "$SRT_FILE" | rev | cut -d'.' -f3 | rev) =~ ${TYPE_LIST[*]} ]]; then
+        TYPE=$(echo "$SRT_FILE" | rev | cut -d'.' -f3 |rev)
+        echo "Subtitle type: $TYPE"
+    fi
+    if [ '$TYPE' ]; then
+        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
+    else 
+        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
+    fi
     echo "File name: $FILE_NAME"
     VIDEO_FILE=$FILE_NAME'.mkv'
     if [ ! -f "$VIDEO_FILE" ]; then
