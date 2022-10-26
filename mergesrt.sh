@@ -12,7 +12,7 @@ mergesrt() {
     echo "SRT file: $SRT_FILE"
     LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
     echo "Subtitle language: $LANG"
-    Type=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.(?:[a-z]{2,3}?)\.srt$|\1|')
+    TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
     echo "Subtitle type: $TYPE"
     FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
     echo "File name: $FILE_NAME"
