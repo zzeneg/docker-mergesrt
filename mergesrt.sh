@@ -8,7 +8,7 @@ sendToWebhook() {
 }
 
 mergesrt() {
-    declare -a TYPE_LIST=("sdh", "forced", "hi", "cc")
+    TYPE_LIST={"sdh", "forced", "hi", "cc"}
     SRT_FILE=$1
     echo "SRT file: $SRT_FILE"
     #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
