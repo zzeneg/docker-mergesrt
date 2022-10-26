@@ -25,10 +25,10 @@ mergesrt() {
     
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "${SRT_FILE,,}" = *"sdh"* ]; then 
+    if [ "${SRT_FILE,,}" == *"sdh"* ]; then 
         echo "Found SDH file" 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:SDH" --forced-display-flag "0:yes" "$SRT_FILE"
-    elif [ "${SRT_FILE,,}" = *"forced"* ]; then 
+    elif [ "${SRT_FILE,,}" == *"forced"* ]; then 
         echo "Found FORCED file" 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name "0:FORCED" --hearing-impaired-flag "0:yes" "$SRT_FILE"
     else
