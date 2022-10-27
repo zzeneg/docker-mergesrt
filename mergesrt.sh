@@ -8,21 +8,19 @@ sendToWebhook() {
 }
 
 mergesrt() {
-    TYPE_LIST=("sdh" "forced" "hi" "cc")
     SRT_FILE=$1
     echo "SRT file: $SRT_FILE"
     #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
     LANG=$(echo "$SRT_FILE" | rev | cut -d'.' -f2 | rev)
     echo "Subtitle language: $LANG"
     #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
-    if [[ $(echo "$SRT_FILE" | rev | cut -d'.' -f3 | rev) =~ ${TYPE_LIST[*]} ]]; then
-        TYPE=$(echo "$SRT_FILE" | rev | cut -d'.' -f3 |rev)
-        echo "Subtitle type: $TYPE"
-    fi
-    if [ '$TYPE' ]; then
-        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
-    else 
+    TYPE=$(echo "$SRT_FILE" | rev | cut -d'.' -f3 |rev)
+    if [ "${TYPE,,}" -ne 'cc' ] || [ "${TYPE,,}" -ne 'sdh' ] || [ "${TYPE,,}" -ne 'hi' ] || [ "${TYPE,,}" -ne 'forced' ]; then
+        TYPE = ""
         FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
+    else 
+        echo "Subtitle type: $TYPE"
+        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
     fi
     echo "File name: $FILE_NAME"
     VIDEO_FILE=$FILE_NAME'.mkv'
@@ -33,16 +31,15 @@ mergesrt() {
         echo "File $VIDEO_FILE does not exist, skipping"
         return
     fi
-
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "${TYPE,,}" == "sdh" ] || [ "${TYPE,,}" == "hi" ]; then 
+    #if [ "${TYPE,,}" == "sdh" ] || [ "${TYPE,,}" == "hi" ]; then 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag "0:yes" "$SRT_FILE"
-    elif [ "${TYPE,,}" == "forc"* ]; then 
+    #elif [ "${TYPE,,}" == "forc"* ]; then 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag "0:yes" "$SRT_FILE"
-    else
+    #lse
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$SRT_FILE"
-    fi
+    #fi
     RESULT=$?
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
