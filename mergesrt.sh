@@ -15,12 +15,12 @@ mergesrt() {
     echo "Subtitle language: $LANG"
     #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
     TYPE=$(echo "$SRT_FILE" | rev | cut -d'.' -f3 | rev)
-    if [ "$TYPE" -ne 'cc' ] || [ "$TYPE" -ne 'sdh' ] || [ "$TYPE" -ne 'hi' ] || [ "$TYPE" -ne 'forced' ]; then
-        TYPE = ""
-        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
-    else 
+    if [ "$TYPE" == 'cc' ] || [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'forced' ]; then
         echo "Subtitle type: $TYPE"
         FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
+    else 
+        TYPE = ""
+        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
     fi
     echo "File name: $FILE_NAME"
     VIDEO_FILE=$FILE_NAME'.mkv'
