@@ -15,7 +15,7 @@ mergesrt() {
     echo "Subtitle language: $LANG"
     #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
     TYPE=$(echo "$SRT_FILE" | rev | cut -d'.' -f3 | rev)
-    if [ "$TYPE" == 'cc' ] || [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'forced' ]; then
+    if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
         echo "Subtitle type: $TYPE"
         FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
     else 
@@ -33,8 +33,10 @@ mergesrt() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "forced" ]; then 
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE "$SRT_FILE"
+    if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
+        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$SRT_FILE"
+    elif [ "$TYPE" == "forced" ]; then
+        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$SRT_FILE"
     else
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$SRT_FILE"
     fi
