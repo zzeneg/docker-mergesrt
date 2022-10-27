@@ -19,8 +19,8 @@ mergesrt() {
    #     TYPE = ""
     #    FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
    # else 
-        echo "Subtitle type: $TYPE"
-        FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
+    echo "Subtitle type: $TYPE"
+    FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
     #fi
     echo "File name: $FILE_NAME"
     VIDEO_FILE=$FILE_NAME'.mkv'
@@ -33,12 +33,12 @@ mergesrt() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "${TYPE,,}" == "sdh" ] || [ "${TYPE,,}" == "forc"* ]; then 
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:${TYPE^^} "$SRT_FILE"
+    if [ "$(TYPE,,)" == "sdh" ] || [ "$(TYPE,,)" == "forc"* ]; then 
+        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$(TYPE^^) "$SRT_FILE"
     #elif [ "${TYPE,,}" == "forc"* ]; then 
        # mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:${TYPE^^} "$SRT_FILE"
     else
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:${LANG^^} "$SRT_FILE"
+        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$(LANG^^) "$SRT_FILE"
     fi
     RESULT=$?
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
