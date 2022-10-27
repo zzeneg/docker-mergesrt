@@ -33,10 +33,8 @@ mergesrt() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "forc"* ]; then 
+    if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "forced" ]; then 
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE "$SRT_FILE"
-    #elif [ "${TYPE,,}" == "forc"* ]; then 
-       # mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:${TYPE^^} "$SRT_FILE"
     else
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$SRT_FILE"
     fi
@@ -62,7 +60,7 @@ echo START
 
 DATA_DIR='/data'
 
-find "$DATA_DIR" -type f -regex ".*\.(?:[a-z]?)[a-z][a-z]\.srt$" |
+find "$DATA_DIR" -type f -regex ".*\.[a-z]{2,3}\.srt$" |
     while read srt; do
         mergesrt "$srt"
     done
