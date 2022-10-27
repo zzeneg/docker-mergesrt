@@ -60,7 +60,7 @@ echo START
 
 DATA_DIR='/data'
 
-find "$DATA_DIR" -type f -regex '.*\.[a-z]{2,3}\.srt$' |
+find "$DATA_DIR" -type f -name "*.srt" |
     while read srt; do
         mergesrt "$srt"
     done
