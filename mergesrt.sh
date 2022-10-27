@@ -19,7 +19,7 @@ mergesrt() {
         echo "Subtitle type: $TYPE"
         FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.srt||')
     else 
-        TYPE = ""
+        TYPE=""
         FILE_NAME=$(echo "$SRT_FILE" | sed 's|\.'"$LANG"'\.srt||')
     fi
     echo "File name: $FILE_NAME"
@@ -60,7 +60,7 @@ echo START
 
 DATA_DIR='/data'
 
-find "$DATA_DIR" -type f -regex ".*\.[a-z][a-z][a-z]\.srt$" |
+find "$DATA_DIR" -type f -regex '.*\.[a-z]{2,3}\.srt$' |
     while read srt; do
         mergesrt "$srt"
     done
