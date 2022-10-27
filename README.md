@@ -1,8 +1,9 @@
 # docker-mergesrt
 Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merging them into video
 
-Published on [Docker Hub] townsste (https://hub.docker.com/r/townsste/mergesrt)
-Published on [Docker Hub] zzeneg (https://hub.docker.com/r/zzeneg/mergesrt)
+   Published on [Docker Hub townsste](https://hub.docker.com/r/townsste/mergesrt)
+
+   Published on [Docker Hub zzeneg](https://hub.docker.com/r/zzeneg/mergesrt)
 
 ## Features
 - search for existing `*.lang.srt` files
@@ -18,7 +19,7 @@ Published on [Docker Hub] zzeneg (https://hub.docker.com/r/zzeneg/mergesrt)
 - Supports tags with sdh, forced, hi, & cc.
 
 ## Requirements
-- a folder with media files should be mapped to `/data`
+- A folder with media files should be mapped to `/data`
 - SRT file should have a language in its name in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or [ISO 639-2](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) format, e.g. `name.en.srt` or `name.eng.srt`.
 
 ## Usage
