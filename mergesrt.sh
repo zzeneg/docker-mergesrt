@@ -62,12 +62,12 @@ echo START
 
 DATA_DIR='/data'
 
-find "$DATA_DIR" -type f -name "*.srt" |
+find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
     while read srt; do
         mergesrt "$srt"
     done
 
-inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.[a-z]{2,3}\.srt$' --include '.*\.[a-z]{2,3}\.srt|idx$' --format '%w%f' |
+inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.[a-z]{2,3}\.srt$' --include '.*\.[a-z]{2,3}\.srt$' --format '%w%f' |
     while read srt; do
         echo "The file '$srt' was created/moved"
         mergesrt "$srt"
