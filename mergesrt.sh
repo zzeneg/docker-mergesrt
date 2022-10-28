@@ -114,7 +114,7 @@ echo START
 DATA_DIR='/data'
 
 find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
-    while read srt; do
+    while read file; do
         EXT=$(echo "$file" | rev | cut -d'.' -f1 | rev)
         case $EXT in
             srt)
@@ -122,9 +122,6 @@ find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
                 ;;
             idx)
                 mergeidx "$file"
-                ;;
-            *)
-                echo "NO VALID FILE FOUND"
                 ;;
         esac
     done
@@ -139,9 +136,6 @@ inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.([a-z]{2,3}\.sr
                 ;;
             idx)
                 mergeidx "$file"
-                ;;
-            *)
-                echo "NO VALID FILE FOUND"
                 ;;
         esac
     done
