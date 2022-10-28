@@ -39,12 +39,15 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 - For IDX a `.sub` file should be placed in the same directory as the `.idx` and `video file`.
 
 ## Usage
-- specify environment variables for a webhook (optional):
+- specify environment variables for a webhook (optional): 
+- PLEASE NOTE: I do not know how my changes effect the WEBHOOK aspect of this.
   - `WEBHOOK_URL` - URL for the POST request. For example you can use [Apprise](https://github.com/caronc/apprise)
   - `WEBHOOK_TEMPLATE` - template for the POST request body. Note that all double quotes `"` should be escaped by a backslash `\` and dollar signs `$` should be doubled. You can use variables in this template:
-    - `$SRT_FILE` - full path to the subtitle file
+    - `$IMPORT_FILE` - full path to the subtitle file
     - `$VIDEO_FILE` - full path to the video file
-    - `$LANG` - ISO 639-2 language code of the subtitles 
+    - `$EXT` - file extenstion
+    - `$TYPE` - file type
+    - `$LANG` - ISO 639-1 or ISO 639-2 language code of the subtitles 
     - `$RESULT` - merge result, returns `merge succeeded`, `merge completed with warnings` or `merge failed`
 
 - docker-compose example
@@ -57,7 +60,7 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
     restart: unless-stopped
     environment:
       WEBHOOK_URL: http://apprise:8000/notify
-      WEBHOOK_TEMPLATE: '{\"title\":\"*MergeSRT - $$RESULT*\", \"body\":\"$$SRT_FILE\"}'
+      WEBHOOK_TEMPLATE: '{\"title\":\"*MergeSRT - $$RESULT*\", \"body\":\"$$IMPORT_FILE\"}'
     volumes:
       - /media:/data
   ```
