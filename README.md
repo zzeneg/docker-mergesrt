@@ -22,6 +22,7 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 ## Subtitle Format:
      file_name.TAG.LANGUAGE.srt
      file_name.LANGUAGE.srt
+     file_name.idx
 
 - Example:
      - SRT
@@ -50,8 +51,7 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
     - `$LANG` - ISO 639-1 or ISO 639-2 language code of the subtitles 
     - `$RESULT` - merge result, returns `merge succeeded`, `merge completed with warnings` or `merge failed`
 
-- docker-compose example
-     - A logo for the docker can be [found here](https://raw.githubusercontent.com/townsste/docker-templates/master/townsste/images/mergesrt.png)
+- docker-compose example:
  
   ```yaml
   mergesrt:
@@ -65,3 +65,4 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
       - /media:/data
   ```
       
+- A logo for the docker can be [found here](https://raw.githubusercontent.com/townsste/docker-templates/master/townsste/images/mergesrt.png)
