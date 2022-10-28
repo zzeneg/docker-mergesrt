@@ -11,8 +11,9 @@ mergesrt() {
     IMPORT_FILE=$1
     echo "Imported file: $IMPORT_FILE"
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
+    echo "Extension: $EXT"
     #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
-    if [ "$EXT" == 'srt']; then
+    if [ "$EXT" == 'srt' ]; then
         LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
         echo "Subtitle language: $LANG"
         #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
@@ -38,7 +39,7 @@ mergesrt() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
-    if [ "$EXT" == 'srt']; then
+    if [ "$EXT" == 'srt' ]; then
         if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
             mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
         elif [ "$TYPE" == "forced" ]; then
