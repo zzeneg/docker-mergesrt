@@ -115,7 +115,6 @@ DATA_DIR='/data'
 
 find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
     while read srt; do
-        echo "The file '$file' was created/moved"
         EXT=$(echo "$file" | rev | cut -d'.' -f1 | rev)
         case $EXT in
             srt)
