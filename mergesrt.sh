@@ -123,6 +123,9 @@ find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
             idx)
                 mergeidx "$file"
                 ;;
+            *)
+                echo "NO VALID FILE FOUND"
+                ;;
         esac
     done
 
@@ -136,6 +139,9 @@ inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.([a-z]{2,3}\.sr
                 ;;
             idx)
                 mergeidx "$file"
+                ;;
+            *)
+                echo "NO VALID FILE FOUND"
                 ;;
         esac
     done
