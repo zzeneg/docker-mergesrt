@@ -67,7 +67,7 @@ find "$DATA_DIR" -type f -name "*.srt" |
         mergesrt "$srt"
     done
 
-inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.idx$' --format '%w%f' |
+inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.(idx)$' --format '%w%f' |
     while read srt; do
         echo "The file '$srt' was created/moved"
         mergesrt "$srt"
