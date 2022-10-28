@@ -19,9 +19,24 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 - Supports tags with sdh, forced, hi, & cc.
 - Supports merging .idx with .sub file.
 
+## Subtitle Format:
+     file_name.TAG.LANGUAGE.srt
+     file_name.LANGUAGE.srt
+
+- Example:
+     - SRT
+          - file_name.sdh.en.srt
+          - file_name.forced.eng.srt.
+          - file_name.eng.srt 
+          - file_name.en.srt
+
+    - IDX
+         - file_name.idx
+
 ## Requirements
 - A folder with media files should be mapped to `/data`
 - SRT file should have a language in its name in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or [ISO 639-2](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) format, e.g. `name.en.srt` or `name.eng.srt`.
+- For IDX a `.sub` file should be placed in the same directory as the `.idx` and `video file`.
 
 ## Usage
 - specify environment variables for a webhook (optional):
@@ -33,10 +48,12 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
     - `$RESULT` - merge result, returns `merge succeeded`, `merge completed with warnings` or `merge failed`
 
 - docker-compose example
+     - A logo for the docker can be [found here](https://raw.githubusercontent.com/townsste/docker-templates/master/townsste/images/mergesrt.png)
+ 
   ```yaml
   mergesrt:
     container_name: mergesrt
-    image: zzeneg/mergesrt
+    image: townsste/mergesrt
     restart: unless-stopped
     environment:
       WEBHOOK_URL: http://apprise:8000/notify
@@ -44,3 +61,4 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
     volumes:
       - /media:/data
   ```
+      
