@@ -17,6 +17,7 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 ## Added functionality
 - Use 2 language code.
 - Supports tags with sdh, forced, hi, & cc.
+- Supports merging .idx with .sub file.
 
 ## Requirements
 - A folder with media files should be mapped to `/data`
