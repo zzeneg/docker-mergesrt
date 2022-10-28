@@ -7,23 +7,15 @@ sendToWebhook() {
     fi
 }
 
-#mergecheck() {
-#    IMPORT_FILE=$1
-#    echo "Imported file: $IMPORT_FILE"
-#    EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
-#    mergesrt "$srt"
-#    mergeidx "$srt"
-#}
-
+# MERGE SRT FILES HERE -----------------------------------------------------------------
 mergesrt() {
     IMPORT_FILE=$1
     echo "Imported file: $IMPORT_FILE"
+    # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
     echo "Extension: $EXT"
-    #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|')
     LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
     echo "Subtitle language: $LANG"
-    #TYPE=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,})\.'"$LANG"'\.srt$|\1|')
     TYPE=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f3 | rev)
     if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
         echo "Subtitle type: $TYPE"
@@ -34,6 +26,7 @@ mergesrt() {
     fi
     echo "File name: $FILE_NAME"
     VIDEO_FILE=$FILE_NAME'.mkv'
+    # CHECK IF VIDEO EXISTS -------------------------------------------------------------
     if [ ! -f "$VIDEO_FILE" ]; then
         VIDEO_FILE=$FILE_NAME'.mp4'
     fi
@@ -43,6 +36,7 @@ mergesrt() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
+    # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
     if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
     elif [ "$TYPE" == "forced" ]; then
@@ -51,6 +45,7 @@ mergesrt() {
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
     fi
     RESULT=$?
+    # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
         echo "$RESULT"
@@ -68,17 +63,21 @@ mergesrt() {
     sendToWebhook
 }
 
+# MERGE IDX FILES HERE -----------------------------------------------------------------
 mergeidx() {
     IMPORT_FILE=$1
+    echo "Imported file: $IMPORT_FILE"
+    # PARSE FILE COMPONENTS
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
     echo "Extension: $EXT"
-    #LANG=$(echo "$SRT_FILE" | sed -r 's|^.*\.([a-z]{2,3})\.srt$|\1|'
     FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$EXT"'||')
     echo "File name: $FILE_NAME"
+    # CHECK IF .SUB EXSISTS -------------------------------------------------------------
     if [ ! -f "$FILE_NAME"'.sub' ]; then
         echo "$FILE_NAME"'.sub' "file does not exist, skipping"
         return
     fi
+    # CHECK IF VIDEO EXISTS -------------------------------------------------------------
     VIDEO_FILE=$FILE_NAME'.mkv'
     if [ ! -f "$VIDEO_FILE" ]; then
         VIDEO_FILE=$FILE_NAME'.mp4'
@@ -89,8 +88,10 @@ mergeidx() {
     fi
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
+    # MKVMERGE COMMAND ------------------------------------------------------------------
     mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE"
     RESULT=$?
+    # CLEAN UP --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
         echo "$RESULT"
@@ -113,6 +114,7 @@ echo START
 
 DATA_DIR='/data'
 
+# LOOK FOR FILES ON STARTUP -------------------------------------------------------------
 find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
     while read file; do
         EXT=$(echo "$file" | rev | cut -d'.' -f1 | rev)
@@ -125,7 +127,8 @@ find "$DATA_DIR" -type f -name "*.srt" -o -name "*.idx" |
                 ;;
         esac
     done
-
+    
+# MONITOR FOR NEW FILES IN DIR ----------------------------------------------------------
 inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.([a-z]{2,3}\.srt|idx)$' --format '%w%f' |
     while read file; do
         echo "The file '$file' was created/moved"
