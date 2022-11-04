@@ -94,15 +94,15 @@ mergeidx() {
     # CLEAN UP --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
-        echo "$RESULT"
-        echo "Deleting .idx file"
-        rm "$IMPORT_FILE"
-        echo "Deleting .sub file"
-        rm "$FILE_NAME.sub"
-        echo "Delete $VIDEO_FILE"
-        rm "$VIDEO_FILE"
-        echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
-        mv "$MERGE_FILE" "$FILE_NAME.mkv"
+        #echo "$RESULT"
+        #echo "Deleting .idx file"
+        #rm "$IMPORT_FILE"
+        #echo "Deleting .sub file"
+        #rm "$FILE_NAME.sub"
+        #echo "Delete $VIDEO_FILE"
+        #rm "$VIDEO_FILE"
+        #echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+        #mv "$MERGE_FILE" "$FILE_NAME.mkv"
     else
         RESULT="merge failed"
         echo "$RESULT"
