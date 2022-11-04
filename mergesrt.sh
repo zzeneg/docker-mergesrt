@@ -48,13 +48,13 @@ mergesrt() {
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
-        echo "$RESULT"
-        echo "Delete $IMPORT_FILE"
-        rm "$IMPORT_FILE"
-        echo "Delete $VIDEO_FILE"
-        rm "$VIDEO_FILE"
-        echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
-        mv "$MERGE_FILE" "$FILE_NAME.mkv"
+        #echo "$RESULT"
+        #echo "Delete $IMPORT_FILE"
+        #rm "$IMPORT_FILE"
+        #echo "Delete $VIDEO_FILE"
+        #rm "$VIDEO_FILE"
+        #echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+        #mv "$MERGE_FILE" "$FILE_NAME.mkv"
     else
         RESULT="merge failed"
         echo "$RESULT"
