@@ -35,7 +35,7 @@ mergesrt() {
         return
     fi
     echo "File $VIDEO_FILE exists, start merging"
-    MERGE_FILE=$FILE_NAME'.merge'
+    MERGE_FILE=$FILE_NAME'.merge.mkv'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
     if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
         mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
