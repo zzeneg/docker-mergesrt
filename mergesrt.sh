@@ -55,6 +55,8 @@ mergesrt() {
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
+        mkvmerge --identify "$MERGE_FILE"
+
         #echo "$RESULT"
         #echo "Delete $IMPORT_FILE"
         #rm "$IMPORT_FILE"
