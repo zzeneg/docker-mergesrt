@@ -42,13 +42,19 @@ mergesrt() {
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
-    if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
-        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
-    elif [ "$TYPE" == "forced" ]; then
-        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$IMPORT_FILE"
-    else
-        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
-    fi
+    merge() {
+        if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
+            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
+        elif [ "$TYPE" == "forced" ]; then
+            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$IMPORT_FILE"
+        else
+            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
+        fi
+        }
+    merge
+    while !(mkvmerge --identify "$VIDEO_FILE" | grep -q 'subtitle') do
+        merge
+    done
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
@@ -66,6 +72,7 @@ mergesrt() {
              # rm "$MERGE_FILE"
         else
              echo "subtitle missing from merge"
+             echo " "
              rm "$MERGE_FILE"
         fi
     else
