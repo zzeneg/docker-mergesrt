@@ -128,7 +128,7 @@ echo START
 DATA_DIR='/data'
 
 # LOOK FOR FILES ON STARTUP -------------------------------------------------------------
-find "$DATA_DIR" -type f -name "*.??.srt" -o -name "*.???.srt" -o -name "*.???.??.srt" -o -name "*.???.???.srt" -o -name "*.idx" |
+find "$DATA_DIR" -type f -name "*.???*.??.srt" -o -name "*.???*.???.srt" -o -name "*.idx" |
     while read file; do
         EXT=$(echo "$file" | rev | cut -d'.' -f1 | rev)
         case $EXT in
