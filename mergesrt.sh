@@ -56,7 +56,7 @@ mergesrt() {
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
         mkvmerge --identify "$MERGE_FILE"
-        if ./mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle'; then
+        if mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle'; then
         echo "matched"
         fi
 
