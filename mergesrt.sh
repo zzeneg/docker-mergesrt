@@ -52,7 +52,7 @@ mergesrt() {
         fi
         }
     merge
-    while !(mkvmerge --identify "$VIDEO_FILE" | grep -q 'subtitle') do
+    while !(mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle') do
         merge
     done
     RESULT=$?
