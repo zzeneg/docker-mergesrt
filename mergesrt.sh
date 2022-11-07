@@ -30,8 +30,6 @@ mergesrt() {
     # CHECK IF THERE ARE MORE THAN 1 SUBS
     echo "Count: " ls -dq $FILE_NAME* | wc -l
     
-    read -p "Press any key to resume ..."
-    
     VIDEO_FILE=$FILE_NAME'.mkv'
     # CHECK IF VIDEO EXISTS -------------------------------------------------------------
     if [ ! -f "$VIDEO_FILE" ]; then
@@ -42,31 +40,34 @@ mergesrt() {
         return
     fi
     echo "File $VIDEO_FILE exists, start merging"
-    MERGE_FILE=$FILE_NAME'.merge.mkv'
+    # MERGE_FILE=$FILE_NAME'.merge.mkv'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
     if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
+        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
     elif [ "$TYPE" == "forced" ]; then
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$IMPORT_FILE"
+        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$IMPORT_FILE"
     else
-        mkvmerge -o "$MERGE_FILE" -s !$LANG "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
+        mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
     fi
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
+        echo "$RESULT"
         mkvmerge --identify "$MERGE_FILE"
         if mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle'; then
-        echo "matched"
+             echo "subtitle found successful"
+             #echo "Delete $IMPORT_FILE"
+             #rm "$IMPORT_FILE"
+             echo "Delete $VIDEO_FILE"
+             rm "$VIDEO_FILE"
+             echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+             mv "$MERGE_FILE" "$FILE_NAME.mkv"
+             rm "$MERGE_FILE"
+        else
+             echo "subtitle missing from merge"
+             rm "$MERGE_FILE"
         fi
-
-        #echo "$RESULT"
-        #echo "Delete $IMPORT_FILE"
-        #rm "$IMPORT_FILE"
-        #echo "Delete $VIDEO_FILE"
-        #rm "$VIDEO_FILE"
-        #echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
-        #mv "$MERGE_FILE" "$FILE_NAME.mkv"
     else
         RESULT="merge failed"
         echo "$RESULT"
@@ -127,7 +128,7 @@ echo START
 DATA_DIR='/data'
 
 # LOOK FOR FILES ON STARTUP -------------------------------------------------------------
-find "$DATA_DIR" -type f -name "*.??.srt" -o -name "*.???.srt" -o -name "*.idx" |
+find "$DATA_DIR" -type f -name "*.??.srt" -o -name "*.???.srt" -o -name "*.???.??.srt" -o -name "*.???.???.srt" -o -name "*.idx" |
     while read file; do
         EXT=$(echo "$file" | rev | cut -d'.' -f1 | rev)
         case $EXT in
