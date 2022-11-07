@@ -40,7 +40,7 @@ mergesrt() {
         return
     fi
     echo "File $VIDEO_FILE exists, start merging"
-    # MERGE_FILE=$FILE_NAME'.merge.mkv'
+    MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
     if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
         mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
@@ -63,7 +63,7 @@ mergesrt() {
              rm "$VIDEO_FILE"
              echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
              mv "$MERGE_FILE" "$FILE_NAME.mkv"
-             rm "$MERGE_FILE"
+             # rm "$MERGE_FILE"
         else
              echo "subtitle missing from merge"
              rm "$MERGE_FILE"
