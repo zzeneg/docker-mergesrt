@@ -10,6 +10,7 @@ sendToWebhook() {
 # MERGE SRT FILES HERE -----------------------------------------------------------------
 mergesrt() {
     IMPORT_FILE=$1
+    FILE_COUNT=0
     echo "Imported file: $IMPORT_FILE"
     # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
@@ -25,6 +26,12 @@ mergesrt() {
         FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$LANG"'\.'"$EXT"'||')
     fi
     echo "File name: $FILE_NAME"
+    
+    # CHECK IF THERE ARE MORE THAN 1 SUBS
+    echo "Count: " ls -dq $FILE_NAME* | wc -l
+    
+    read -p "Press any key to resume ..."
+    
     VIDEO_FILE=$FILE_NAME'.mkv'
     # CHECK IF VIDEO EXISTS -------------------------------------------------------------
     if [ ! -f "$VIDEO_FILE" ]; then
