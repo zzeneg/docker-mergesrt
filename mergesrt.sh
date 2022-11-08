@@ -36,7 +36,7 @@ mergecommand() {
 mergesrt() {
     IMPORT_FILE=$1
     FILE_COUNT=0
-    echo "Imported file: $IMPORT_FILE" |& tee -a "$DATA_DIR\output.txt"
+    echo "Imported file: $IMPORT_FILE" | tee -a "$DATA_DIR\output.txt"
     # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
     echo "Extension: $EXT" | tee -a "$DATA_DIR\output.txt"
