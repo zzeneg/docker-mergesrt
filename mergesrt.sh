@@ -36,6 +36,7 @@ mergecommand() {
 
 # MERGE SRT FILES HERE -----------------------------------------------------------------
 mergesrt() {
+    echo "Dir: $DATA_DIR"
     IMPORT_FILE=$1
     FILE_COUNT=0
     echo "Imported file: $IMPORT_FILE" >> "$DATA_DIR\output.txt"
