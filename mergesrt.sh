@@ -36,24 +36,21 @@ mergecommand() {
 mergesrt() {
     IMPORT_FILE=$1
     FILE_COUNT=0
-    echo "Imported file: $IMPORT_FILE"
+    echo "Imported file: $IMPORT_FILE" |& tee -a "$DATA_DIR\output.txt"
     # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
-    echo "Extension: $EXT"
+    echo "Extension: $EXT" |& tee -a "$DATA_DIR\output.txt"
     LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
-    echo "Subtitle language: $LANG"
+    echo "Subtitle language: $LANG" |& tee -a "$DATA_DIR\output.txt"
     TYPE=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f3 | rev)
     if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
-        echo "Subtitle type: $TYPE"
+        echo "Subtitle type: $TYPE" |& tee -a "$DATA_DIR\output.txt"
         FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.'"$EXT"'||')
     else 
         TYPE=""
         FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$LANG"'\.'"$EXT"'||')
     fi
-    echo "File name: $FILE_NAME"
-    
-    # CHECK IF THERE ARE MORE THAN 1 SUBS
-    echo "Count: " ls -dq $FILE_NAME* | wc -l
+    echo "File name: $FILE_NAME" |& tee -a "$DATA_DIR\output.txt"
     
     VIDEO_FILE=$FILE_NAME'.mkv'
     # CHECK IF VIDEO EXISTS -------------------------------------------------------------
@@ -61,10 +58,10 @@ mergesrt() {
         VIDEO_FILE=$FILE_NAME'.mp4'
     fi
     if [ ! -f "$VIDEO_FILE" ]; then
-        echo "File $VIDEO_FILE does not exist, skipping"
+        echo "File $VIDEO_FILE does not exist, skipping" |& tee -a "$DATA_DIR\output.txt"
         return
     fi
-    echo "File $VIDEO_FILE exists, start merging"
+    echo "File $VIDEO_FILE exists, start merging" |& tee -a "$DATA_DIR\output.txt"
     MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
     # When doing large batches sometimes the merge does not seem to work correctly.
@@ -73,25 +70,25 @@ mergesrt() {
     mergecommand "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     
     while !(mkvmerge --identify "$MERGE_FILE" | grep -c -q 'subtitle') do
-        echo "Subtitle is missing from merge file.  Rerunning merge"
+        echo "Subtitle is missing from merge file.  Rerunning merge" |& tee -a "$DATA_DIR\output.txt"
         rm "$MERGE_FILE"
         mergecommand "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     done
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
-        RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
-        echo "$RESULT"
-        echo "subtitle found successful"
+        RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings") |& tee -a "$DATA_DIR\output.txt"
+        echo "$RESULT" |& tee -a "$DATA_DIR\output.txt"
+        echo "subtitle found successful" |& tee -a "$DATA_DIR\output.txt"
         #echo "Delete $IMPORT_FILE"
         #rm "$IMPORT_FILE"
-        echo "Delete $VIDEO_FILE"
+        echo "Delete $VIDEO_FILE" |& tee -a "$DATA_DIR\output.txt"
         rm "$VIDEO_FILE"
-        echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+        echo "Rename $MERGE_FILE to $FILE_NAME.mkv" |& tee -a "$DATA_DIR\output.txt"
         mv "$MERGE_FILE" "$FILE_NAME.mkv"
         # rm "$MERGE_FILE"
     else
-        RESULT="merge failed"
+        RESULT="merge failed" |& tee -a "$DATA_DIR\output.txt"
         echo "$RESULT"
     fi
 
