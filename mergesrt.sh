@@ -1,5 +1,7 @@
 #!/bin/sh
 
+DATA_DIR='/data'
+
 sendToWebhook() {
     if [ -n "$WEBHOOK_URL" ] && [ -n "$WEBHOOK_TEMPLATE" ]; then
         data=$(eval "echo \"$WEBHOOK_TEMPLATE\"")
@@ -143,12 +145,6 @@ mergeidx() {
     sendToWebhook
 }
 
-
-
-echo START
-
-DATA_DIR='/data'
-
 # LOOK FOR FILES ON STARTUP -------------------------------------------------------------
 find "$DATA_DIR" -type f -name "*.???*.??.srt" -o -name "*.???*.???.srt" -o -name "*.idx" |
     while read file; do
@@ -177,5 +173,3 @@ inotifywait -m -r $DATA_DIR -e create -e moved_to --include '.*\.([a-z]{2,3}\.sr
                 ;;
         esac
     done
-
-echo EXIT
