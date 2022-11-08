@@ -7,6 +7,31 @@ sendToWebhook() {
     fi
 }
 
+mergecommand() {
+    merge=$1
+    video=$2
+    import=$3
+    ext=$4
+    type=$5
+    lang=$6
+
+    case $ext in
+                srt)
+                    if [ "$type" == "sdh" ] || [ "$type" == "hi" ] || [ "$type" == "cc" ]; then
+                        mkvmerge -o "$merge" "$video" --language 0:$lang --track-name 0:$type --hearing-impaired-flag 0:true "$import"
+                    elif [ "$type" == "forced" ]; then
+                        mkvmerge -o "$merge" "$video" --language 0:$lang --track-name 0:$type --forced-display-flag 0:true "$import"
+                    else
+                        mkvmerge -o "$merge" "$video" --language 0:$lang --track-name 0:$lang "$import"
+                    fi
+                    return 
+                    ;;
+                idx)
+                    mkvmerge -o "$merge" "$video" "$import"
+                    ;;
+            esac
+}
+
 # MERGE SRT FILES HERE -----------------------------------------------------------------
 mergesrt() {
     IMPORT_FILE=$1
@@ -42,39 +67,29 @@ mergesrt() {
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND BASED ON TYPE ----------------------------------------------------
-    merge() {
-        if [ "$TYPE" == "sdh" ] || [ "$TYPE" == "hi" ] || [ "$TYPE" == "cc" ]; then
-            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --hearing-impaired-flag 0:true "$IMPORT_FILE"
-        elif [ "$TYPE" == "forced" ]; then
-            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$TYPE --forced-display-flag 0:true "$IMPORT_FILE"
-        else
-            mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" --language 0:$LANG --track-name 0:$LANG "$IMPORT_FILE"
-        fi
-        }
-    merge
+    # When doing large batches sometimes the merge does not seem to work correctly.
+    # this is used to keep running the merge untill the file has detected a subtitle.
+    
+    mergecommand $MERGE_FILE $VIDEO_FILE $IMPORT_FILE $EXT $TYPE $LANG
+    
     while !(mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle') do
-        merge
+        echo "Subtitle is missing from merge file.  Rerunning merge"
+        rm "$MERGE_FILE"
+        mergecommand $MERGE_FILE $VIDEO_FILE $IMPORT_FILE $EXT $TYPE $LANG
     done
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
         RESULT=$([ "$RESULT" -eq "0" ] && echo "merge succeeded" || echo "merge completed with warnings")
         echo "$RESULT"
-        mkvmerge --identify "$MERGE_FILE"
-        if mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle'; then
-             echo "subtitle found successful"
-             #echo "Delete $IMPORT_FILE"
-             #rm "$IMPORT_FILE"
-             echo "Delete $VIDEO_FILE"
-             rm "$VIDEO_FILE"
-             echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
-             mv "$MERGE_FILE" "$FILE_NAME.mkv"
-             # rm "$MERGE_FILE"
-        else
-             echo "subtitle missing from merge"
-             echo " "
-             rm "$MERGE_FILE"
-        fi
+        echo "subtitle found successful"
+        #echo "Delete $IMPORT_FILE"
+        #rm "$IMPORT_FILE"
+        echo "Delete $VIDEO_FILE"
+        rm "$VIDEO_FILE"
+        echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
+        mv "$MERGE_FILE" "$FILE_NAME.mkv"
+        # rm "$MERGE_FILE"
     else
         RESULT="merge failed"
         echo "$RESULT"
@@ -109,7 +124,8 @@ mergeidx() {
     echo "File $VIDEO_FILE exists, start merging"
     MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND ------------------------------------------------------------------
-    mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE"
+    #mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE"
+    mergecommand $MERGE_FILE, $VIDEO_FILE, $IMPORT_FILE
     RESULT=$?
     # CLEAN UP --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
@@ -129,6 +145,8 @@ mergeidx() {
     fi
     sendToWebhook
 }
+
+
 
 echo START
 
