@@ -14,6 +14,14 @@ mergecommand() {
     ext=$4
     type=$5
     lang=$6
+    
+    echo 'test function'
+    echo $merge
+    echo $video
+    echo $import
+    echo $ext
+    echo $type
+    echo $lang
 
     case $ext in
                 srt)
