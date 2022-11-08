@@ -92,8 +92,7 @@ process() {
         echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
         mv "$MERGE_FILE" "$FILE_NAME.mkv"
         # rm "$MERGE_FILE"
-        echo "--------------------------- END PROCESS --------------------------"
-        echo:
+        echo "---------------------------- END PROCESS ---------------------------"
     else
         echo -e "\e[0;31mMERGE FAILED\e[m"
     fi
