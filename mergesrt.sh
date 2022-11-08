@@ -54,6 +54,8 @@ process() {
             TYPE=""
             FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$LANG"'\.'"$EXT"'||')
         fi
+    else
+        FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$EXT"'||')
     fi
     echo "File name: $FILE_NAME"
     
