@@ -86,6 +86,7 @@ process() {
         echo "subtitle found successful"
         echo "Delete $IMPORT_FILE"
         rm "$IMPORT_FILE"
+        rm "$FILE_NAME.sub"
         echo "Delete $VIDEO_FILE"
         rm "$VIDEO_FILE"
         echo "Rename $MERGE_FILE to $FILE_NAME.mkv"
