@@ -1,10 +1,4 @@
-#!/bin/
-
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+#!/bin/sh
 
 DATA_DIR='/data'
 
@@ -46,16 +40,16 @@ merge() {
 process() {
     IMPORT_FILE=$1
     echo "--------------------------- START PROCESS --------------------------"
-    echo -e "$BLUEImported file: $IMPORT_FILE$NC"
+    echo -e "\e[0;34m Imported file: $IMPORT_FILE\e[m"
     # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
-    echo -e "$BLUEExtension: $EXT$NC"
+    echo -e "\e[0;34m Extension: $EXT\e[m"
     if [ "$EXT" == "srt" ]; then
         LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
-        echo -e "$BLUESubtitle language: $LANG$NC"
+        echo -e "\e[0;34m Subtitle language: $LANG\e[m"
         TYPE=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f3 | rev)
         if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
-            echo -e "$BLUESubtitle type: $TYPE$NC"
+            echo -e "\e[0;34m Subtitle type: $TYPE\e[m"
             FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.'"$EXT"'||')
         else 
             TYPE=""
@@ -64,7 +58,7 @@ process() {
     else
         FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$EXT"'||')
     fi
-    echo -e "$BLUEFile name: $FILE_NAME$NC"
+    echo -e "\e[0;34m File name: $FILE_NAME\e[m"
     
     VIDEO_FILE=$FILE_NAME'.mkv'
     # CHECK IF VIDEO EXISTS -------------------------------------------------------------
@@ -72,23 +66,23 @@ process() {
         VIDEO_FILE=$FILE_NAME'.mp4'
     fi
     if [ ! -f "$VIDEO_FILE" ]; then
-        echo -e "$REDFile $VIDEO_FILE does not exist, skipping$NC"
+        echo -e "\e[0;31m File $VIDEO_FILE does not exist, skipping\e[m"
         return
     fi
-    echo -e "$GREENSTARTING MERGING$NC"
+    echo -e "\e[0;32m STARTING MERGING\e[m"
     MERGE_FILE=$FILE_NAME'.merge'
     merge "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     # When doing large batches sometimes the merge does not seem to work correctly.
     # this is used to keep running the merge untill the file has detected a subtitle.
     while !(mkvmerge --identify "$MERGE_FILE" | grep -c -q 'subtitle') do
-        echo -e "$REDSubtitle is missing from merge file. Rerunning merge$NC"
+        echo -e "\e[0;31m Subtitle is missing from merge file.  Rerunning merge\e[m"
         rm "$MERGE_FILE"
         merge "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     done
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
-        RESULT=$([ "$RESULT" -eq "0" ] && echo -e "$GREENmerge succeeded$NC" || echo -e "$YELLOWmerge completed with warnings$NC")
+        RESULT=$([ "$RESULT" -eq "0" ] && echo -e "\e[0;32m merge succeeded\e[m" || echo -e "\e[1;33m merge completed with warnings\e[m")
         echo "$RESULT"
         echo "subtitle found successful"
         echo "Delete $IMPORT_FILE"
