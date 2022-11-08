@@ -43,15 +43,17 @@ process() {
     # PARSE FILE COMPONENTS ------------------------------------------------------------
     EXT=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f1 | rev)
     echo "Extension: $EXT"
-    LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
-    echo "Subtitle language: $LANG"
-    TYPE=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f3 | rev)
-    if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
-        echo "Subtitle type: $TYPE"
-        FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.'"$EXT"'||')
-    else 
-        TYPE=""
-        FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$LANG"'\.'"$EXT"'||')
+    if [ "$EXT" == "srt" ]; then
+        LANG=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f2 | rev)
+        echo "Subtitle language: $LANG"
+        TYPE=$(echo "$IMPORT_FILE" | rev | cut -d'.' -f3 | rev)
+        if [ "$TYPE" == 'sdh' ] || [ "$TYPE" == 'forced' ] || [ "$TYPE" == 'hi' ] || [ "$TYPE" == 'cc' ]; then
+            echo "Subtitle type: $TYPE"
+            FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$TYPE"'\.'"$LANG"'\.'"$EXT"'||')
+        else 
+            TYPE=""
+            FILE_NAME=$(echo "$IMPORT_FILE" | sed 's|\.'"$LANG"'\.'"$EXT"'||')
+        fi
     fi
     echo "File name: $FILE_NAME"
     
