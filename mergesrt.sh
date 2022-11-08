@@ -14,14 +14,6 @@ mergecommand() {
     ext=$4
     type=$5
     lang=$6
-    
-    echo 'test function'
-    echo $merge
-    echo $video
-    echo $import
-    echo $ext
-    echo $type
-    echo $lang
 
     case $ext in
                 srt)
@@ -80,11 +72,11 @@ mergesrt() {
     
     mergecommand "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     
-    #while !(mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle') do
-        #echo "Subtitle is missing from merge file.  Rerunning merge"
-        #rm "$MERGE_FILE"
-        #mergecommand $MERGE_FILE $VIDEO_FILE $IMPORT_FILE $EXT $TYPE $LANG
-    #done
+    while !(mkvmerge --identify "$MERGE_FILE" | grep -c -q 'subtitle') do
+        echo "Subtitle is missing from merge file.  Rerunning merge"
+        rm "$MERGE_FILE"
+        mergecommand "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
+    done
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
