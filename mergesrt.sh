@@ -69,7 +69,7 @@ process() {
         echo -e "\e[0;31mFile $VIDEO_FILE does not exist, skipping\e[m"
         return
     fi
-    echo -e "\e[1;32mSTARTING MERGING\e[m"
+    echo -e "\e[1;32mSTARTING MERGE\e[m"
     MERGE_FILE=$FILE_NAME'.merge'
     merge "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE" "$EXT" "$TYPE" "$LANG"
     # When doing large batches sometimes the merge does not seem to work correctly.
@@ -82,9 +82,8 @@ process() {
     RESULT=$?
     # CLEAN UP  --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
-        RESULT=$([ "$RESULT" -eq "0" ] && echo -e "\e[1;32mmerge succeeded\e[m" || echo -e "\e[1;33mmerge completed with warnings\e[m")
+        RESULT=$([ "$RESULT" -eq "0" ] && echo -e "\e[1;32mMERGE SUCCEEDED\e[m" || echo -e "\e[1;33mMERGE COMPLETED WITH WARNINGS\e[m")
         echo "$RESULT"
-        echo "subtitle found successful"
         echo "Delete $IMPORT_FILE"
         rm "$IMPORT_FILE"
         rm "$FILE_NAME.sub"
@@ -96,8 +95,7 @@ process() {
         echo "--------------------------- END PROCESS --------------------------"
         echo:
     else
-        RESULT="merge failed"
-        echo "$RESULT"
+        echo -e "\e[0;31mMERGE FAILED\e[m"
     fi
 
     sendToWebhook
