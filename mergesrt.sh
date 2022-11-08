@@ -78,7 +78,7 @@ mergesrt() {
     # When doing large batches sometimes the merge does not seem to work correctly.
     # this is used to keep running the merge untill the file has detected a subtitle.
     
-    mergecommand $MERGE_FILE $VIDEO_FILE $IMPORT_FILE $EXT $TYPE $LANG
+    mergecommand '$MERGE_FILE' '$VIDEO_FILE' '$IMPORT_FILE' '$EXT' '$TYPE' '$LANG'
     
     #while !(mkvmerge --identify "$MERGE_FILE" | grep -q 'subtitle') do
         #echo "Subtitle is missing from merge file.  Rerunning merge"
@@ -133,7 +133,7 @@ mergeidx() {
     MERGE_FILE=$FILE_NAME'.merge'
     # MKVMERGE COMMAND ------------------------------------------------------------------
     #mkvmerge -o "$MERGE_FILE" "$VIDEO_FILE" "$IMPORT_FILE"
-    mergecommand $MERGE_FILE $VIDEO_FILE $IMPORT_FILE
+    mergecommand '$MERGE_FILE' '$VIDEO_FILE' '$IMPORT_FILE'
     RESULT=$?
     # CLEAN UP --------------------------------------------------------------------------
     if [ "$RESULT" -eq "0" ] || [ "$RESULT" -eq "1" ]; then
