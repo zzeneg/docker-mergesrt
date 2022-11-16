@@ -7,7 +7,7 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 
 ## Features
 - search for existing `*.lang.srt` files
-- search for existing with tags (sdh, forced, hi, cc) `*.tag.lang.srt` files
+- search for existing with tags (sdh, forced, hi, cc) `*.lang.tag.srt` or `*.tag.lang.srt` files
 - monitor for new `*.lang.srt` files
 - merge subtitles to `mkv`/`mp4` files
 - adds on to existing subtitles. thus allows for multiple subtitles to be added 
@@ -18,16 +18,19 @@ Fork of zzeneg/mergesrt. Docker container for monitoring subtitle files and merg
 - Use 2 language code.
 - Supports tags with sdh, forced, hi, & cc.
 - Supports merging .idx with .sub file.
+- Supports the tag being before or after the lang for Bazarr label scheme.
 
 ## Subtitle Format:
+     file_name.LANGUAGE.TAG.srt
      file_name.TAG.LANGUAGE.srt
      file_name.LANGUAGE.srt
      file_name.idx
 
 - Example:
      - SRT
-          - file_name.sdh.en.srt
-          - file_name.forced.eng.srt.
+          - file_name.en.sdh.srt
+          - file_name.hi.en.srt
+          - file_name.eng.forced.srt.
           - file_name.eng.srt 
           - file_name.en.srt
 
